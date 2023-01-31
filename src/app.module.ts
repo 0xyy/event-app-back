@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from "@nestjs/config";
-import {ScheduleModule} from "@nestjs/schedule";
-import {SequelizeModule} from "@nestjs/sequelize";
-import {TestModule} from "./modules/test.module";
-import {Test} from "./models/test.model";
+import { ScheduleModule } from "@nestjs/schedule";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { TestModule } from "./modules/test.module";
+import { Test } from "./models/test.model";
+import { EventModule } from './event/event.module';
 
 @Module({
     imports: [
@@ -22,7 +23,9 @@ import {Test} from "./models/test.model";
             models: [Test],
             autoLoadModels: true
         }),
-        TestModule
+        TestModule,
+        EventModule
     ],
 })
-export class AppModule {}
+export class AppModule {
+}
