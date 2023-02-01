@@ -12,14 +12,13 @@ export type CreateEventResponse = {
     message: string;
 }
 
-export type getOneEventResponse = {
+export type GetOneEventResponse = {
     isSuccess: true,
     event: Event,
 } | {
     isSuccess: false,
     message: string,
 }
-
 
 export type RemoveEventResponse = CreateEventResponse;
 
