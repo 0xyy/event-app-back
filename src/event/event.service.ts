@@ -1,13 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Cron, CronExpression } from '@nestjs/schedule';
+const { Op } = require('sequelize');
 import { Event } from '../models/event.model';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { CreateEventResponse, EditEventResponse, GetOneEventResponse, RemoveEventResponse } from '../types';
+import {
+    CreateEventResponse,
+    EditEventResponse,
+    EventModelInterface, GetAllEventsResponse,
+    GetOneEventResponse,
+    RemoveEventResponse
+} from '../types';
 import { isBeforeToday } from '../utils/is-before-today';
 
 @Injectable()
 export class EventService {
+    private readonly logger = new Logger(EventService.name);
+
     constructor(
         @InjectModel(Event) private readonly eventModel: typeof Event,
     ) {}
@@ -30,7 +40,7 @@ export class EventService {
         }
     }
 
-    async getAll(page: number, limit: number) {
+    async getAll(page: number, limit: number): Promise<GetAllEventsResponse> {
         const offset = (page - 1) * limit;
 
         const events = await this.eventModel.findAll({
@@ -49,7 +59,7 @@ export class EventService {
 
     async getOne(id: string): Promise<GetOneEventResponse> {
         try {
-            const event = await this.eventModel.findByPk(id);
+            const event: EventModelInterface = await this.eventModel.findByPk(id);
 
             if (!event) {
                 throw new Error();
@@ -135,5 +145,23 @@ export class EventService {
                 message: `Nie znaleziono wydarzenia o podanym id ${id}.`,
             };
         }
+    }
+
+    @Cron(CronExpression.EVERY_WEEK)
+    async removeOldEvents() {
+        const currentDate = new Date();
+        const oldEvents = await this.eventModel.findAll({
+            where: {
+                endDate: {
+                    [Op.lt]: currentDate,
+                },
+            },
+        });
+
+        for (const event of oldEvents) {
+            await event.destroy();
+        }
+
+        this.logger.debug(`Usunięto ${oldEvents.length} starych wydarzeń.`);
     }
 }
