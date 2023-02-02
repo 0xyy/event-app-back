@@ -7,7 +7,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule, { cors: true });
 
     const config = new DocumentBuilder()
-        .setTitle("Test")
+        .setTitle("Event App")
         .setDescription("REST Api Documentation")
         .addBearerAuth()
         .setVersion('1.0.0')
