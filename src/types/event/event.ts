@@ -1,10 +1,29 @@
-import { Event } from '../../models/event.model';
+import { CreateEventDto } from '../../event/dto/create-event.dto';
+import { UpdateEventDto } from '../../event/dto/update-event.dto';
 
-export interface EventInterface {
+interface SimpleEventInterface {
+    id: string;
     name: string;
     location: string;
+}
+
+export interface EventInterface extends SimpleEventInterface {
+    startDate: string;
+    endDate: string;
+}
+
+export interface EventModelInterface extends SimpleEventInterface {
     startDate: Date;
     endDate: Date;
+}
+
+export type CreateEventRequest = CreateEventDto;
+
+export type EditEventRequest = UpdateEventDto;
+
+export type GetAllEventsResponse = {
+    events: EventInterface[] | EventModelInterface[];
+    totalEvents: number;
 }
 
 export type CreateEventResponse = {
@@ -14,7 +33,7 @@ export type CreateEventResponse = {
 
 export type GetOneEventResponse = {
     isSuccess: true,
-    event: Event,
+    event: EventInterface | EventModelInterface,
 } | {
     isSuccess: false,
     message: string,
