@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventResponse, EditEventResponse, GetOneEventResponse, RemoveEventResponse } from '../types';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -10,9 +10,12 @@ export class EventController {
         private readonly eventService: EventService,
     ) {}
 
-    @Get('/test')
-    async getAll() {
-        return 'test';
+    @Get('/')
+    async getAllEvents(
+        @Query('page') page: number,
+        @Query('limit') limit: number,
+    ) {
+        return this.eventService.getAll(page, limit);
     }
 
     @Get('/:id')

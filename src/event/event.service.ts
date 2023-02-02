@@ -30,6 +30,23 @@ export class EventService {
         }
     }
 
+    async getAll(page: number, limit: number) {
+        const offset = (page - 1) * limit;
+
+        const events = await this.eventModel.findAll({
+            limit,
+            offset,
+        });
+
+        const totalEvents = (await this.eventModel.findAndCountAll()).count;
+
+        return {
+            events,
+            totalEvents,
+        };
+    }
+
+
     async getOne(id: string): Promise<GetOneEventResponse> {
         try {
             const event = await this.eventModel.findByPk(id);
@@ -62,7 +79,7 @@ export class EventService {
 
             return {
                 isSuccess: true,
-                message: 'Dodano poprawnie nowe wydarzenie.',
+                message: `Dodano poprawnie nowe wydarzenie o nazwie ${name}.`,
             };
         } catch (err) {
             return {
