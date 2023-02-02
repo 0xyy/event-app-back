@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from "@nestjs/config";
-import {ScheduleModule} from "@nestjs/schedule";
-import {SequelizeModule} from "@nestjs/sequelize";
-import {TestModule} from "./modules/test.module";
-import {Test} from "./models/test.model";
+import { ScheduleModule } from "@nestjs/schedule";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { EventModule } from './event/event.module';
+import { Event } from './models/event.model';
 
 @Module({
     imports: [
@@ -19,10 +19,11 @@ import {Test} from "./models/test.model";
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [Test],
+            models: [Event],
             autoLoadModels: true
         }),
-        TestModule
+        EventModule
     ],
 })
-export class AppModule {}
+export class AppModule {
+}
