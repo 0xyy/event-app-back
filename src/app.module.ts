@@ -23,7 +23,7 @@ import { EventModule } from './event/event.module';
             models: [Test],
             autoLoadModels: true
         }),
-        TestModule,
+        // TestModule,
         EventModule
     ],
 })
